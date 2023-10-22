@@ -1,0 +1,33 @@
+name: Modbus Hub
+type: tcp
+host: !secret ngbs_ip # IP address of NGBS's local unit. NGBS unit should have a fixed IP
+port: 502 # By default, NGBS unit uses 502 as port
+sensors:
+  - name: "External Temperature (NGBS)"
+    unique_id: ngbs_external_temperature
+    unit_of_measurement: "C"
+    scale: 0.1 # Values read from the register are multiplied by 10. E.g. 20.5 celsius is returned as 205. HA's scale option can resolve this.
+    address: 0x0152 # For address mapping, please refer to NGBS's Modbus specs.
+    data_type: uint16
+    precision: 1
+  - name: "Humidity - Room 1"
+    unit_of_measurement: "C"
+    slave: 1
+    scale: 0.1
+    address: 0x0121
+    data_type: uint16
+    precision: 1
+climates:
+  - name: "Room 1 Climate"
+    address: 0x0119 # Register returning the current temperature in the room
+    input_type: holding
+    count: 1
+    data_type: uint16
+    max_temp: 35
+    min_temp: 5
+    offset: 0
+    precision: 1
+    scale: 0.1
+    target_temp_register: 0x0183 # Register with r/w access to room's target temperature
+    temp_step: 0.5 # NGBS should support 0.1 precision, can be fine-tuned if needed
+    temperature_unit: C

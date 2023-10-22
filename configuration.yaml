@@ -1,0 +1,4 @@
+# Rest of your existing NGBS configuration...
+
+modbus: !include modbus.yaml
+
